@@ -1,2 +1,2 @@
-.. |Chandra-Toueg| replace:: Distributed Algorithm Name 
+.. |Chandra-Toueg| replace:: Chandra-Toueg Algorithm
 
