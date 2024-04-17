@@ -13,7 +13,6 @@
    :caption: Contents
 
    docs/chandra_toueg/chandra_toueg
-   docs/rubric
    docs/chandra_toueg/code
 
 .. ATTENTION::
