@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath("."))
 project = "Distributed Algorithm on AHCv2: chandra_toueg"
 copyright = "2024, Ahmet Can Ogreten"
 author = "Ahmet Can Ogreten"
-release = "V1.1.0"
+release = "V1.2.0"
 version = release
 
 # -- General configuration ---------------------------------------------------
