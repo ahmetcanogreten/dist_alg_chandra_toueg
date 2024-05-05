@@ -6,28 +6,66 @@ Implementation, Results and Discussion
 Implementation and Methodology
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: 
+As [Hossain]_ depicted in his research, the experiment setup is as follows:
 
-Writing the methodology lies at the core of the paper, and fulfills one of the basic principles underlying the scientific method. Any scientific paper needs to be verifiable by other researchers, so that they can review the results by replicating the experiment and guaranteeing the validity. To assist this, you need to give a completely accurate description of the equipment and the techniques used for gathering the data 
+The topology for the experiment is considered completely connected. It is assumed that the failure detector module will
+not detect any other process as crashed during execution of the consensus algorithm. Therefore, the detector module in process p populates D_p randomly before consensus algorithm
+starts execution. The size of D_p can be selected randomly or simply N/2 . Measurements are taken for both sized D_p.
 
-Other scientists are not going to take your word for it, and they want to be able to evaluate whether your methodology is sound. In addition, it is useful for the reader to understand how you obtained your data, because it allows them to evaluate the quality of the results. For example, if you were trying to obtain data about shopping preferences, you will obtain different results from a multiple-choice questionnaire than from a series of open interviews. Writing methodology allows the reader to make their own decision about the validity of the data. If the research about shopping preferences were built upon a single case study, it would have little external validity, and the reader would treat the results with the contempt that they deserve
+Three parameters are measured to analyzed the performance of the algorithm:
+1) The average number of round needed to receive all processs values for different number of Processes in the system. The algorithm is run for N = 4, 8, 12, ··· 60. For each value of N, we count how many rounds each process takes to receive all other processes' values and then took the average of them to get the average number of round for that particular value of N. This is done for both category of D_p.
+2) For each round, the percentage of processes that get values from all other processes. In this case, N = 8 and 60 is considered to show the comparison result for the parameter.
+3) Average number of waiting time for each process in phase1 for N =8 and 60. Waiting time is the number of times a presses is selected to execute but has to wait to receive all processes' values who are not in its D_p.
 
-Describe the materials and equipment used in the research. Explain how the samples were gathered, any randomization techniques and how the samples were prepared. Explain how the measurements were made and what calculations were performed upon the raw data. Describe the statistical techniques used upon the data
-
-Present any important details of your implementation here.
 
 Results
 ~~~~~~~~
 
-TODO: Present your AHCv2 run results, plot figures.
+The first parameter, the average numbers of round required is plotted against the process count. Process count start from 4, incremented by 4 and its maximum value is 60.
+
+.. image:: figures/fig1.png
+  :width: 200
+
+.. image:: figures/fig2.png
+  :width: 200
+
+The second parameter is the percentage of processes in
+each round those receive values for all other processes in the
+system. This parameter is plotted against the round number
+which is shown in figure 4 and 5. It can be observed that in
+second round, for N = 60, all processes receive all others'
+values (figure 5) while for N = 8 only about 13 percent of
+the processes receive all processes' values, figure 4. It takes
+5 rounds to reach this percentage to 100, which supports the
+results shown in figure 1 and 2, meaning that higher number
+of processes in system less number of round required because
+of higher connectivity.
+
+.. image:: figures/fig4.png
+  :width: 200
+
+.. image:: figures/fig5.png
+    :width: 200
 
 
-This is probably the most variable part of any research paper, and depends upon the results and aims of the experiment. For quantitative research, it is a presentation of the numerical results and data, whereas for qualitative research it should be a broader discussion of trends, without going into too much detail. For research generating a lot of results, then it is better to include tables or graphs of the analyzed data and leave the raw data in the appendix, so that a researcher can follow up and check your calculations. A commentary is essential to linking the results together, rather than displaying isolated and unconnected charts, figures and findings. It can be quite difficulty to find a good balance between the results and the discussion section, because some findings, especially in a quantitative or descriptive experiment, will fall into a grey area. As long as you not repeat yourself to often, then there should be no major problem. It is best to try to find a middle course, where you give a general overview of the data and then expand upon it in the discussion - you should try to keep your own opinions and interpretations out of the results section, saving that for the discussion 
+The last parameter is the average waiting time for the
+processes in phase1. The waiting time is plotted against the
+process IDs for N = 8 and 60. The graphs are shown in figure
+6 and 7.
+
+.. image:: figures/fig6.png
+  :width: 200
+
+.. image:: figures/fig7.png
+    :width: 200
 
 Discussion
 ~~~~~~~~~~
 
-TODO: Present and discuss main learning points.
+The performance of the Chandra-Toueg algorithm heavily relies on the effectiveness of the underlying failure detector. The experiments presented validate the algorithm's robustness and adaptability to network conditions and system sizes, demonstrating its scalability and efficiency. However, the dependency on a highly accurate failure detector poses a limitation, especially in dynamic or unstable network environments where the accuracy of failure detection might be compromised. While the Chandra-Toueg algorithm is suitable for scenarios where the reliability of the failure detector can be assured, alternative algorithms such as Bracha-Toueg offer solutions that do not rely on failure detectors. Choosing between these algorithms should be guided by the specific requirements and constraints of the application environment, including factors such as network stability, the criticality of consensus accuracy, and the overhead of managing failure detectors.
 
 
 
+
+
+.. [Hossain] Hossain, Md Amjad. "Performance Analysis of Chandra-Toueg Consensus Algorithm with S Failure Detector." Department of Computer Science, Kent State University, OH. Email: mhossai2@kent.edu.

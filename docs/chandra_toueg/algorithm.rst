@@ -22,14 +22,14 @@ last-update_q = -1.
 Each round n >= 0 is coordinated by the process p_c with c = n mod N. Round
 n progresses as follows.
 
-- Every correct, undecided process q (including p_c) sends to p_c the message <vote, n, value_q, last-update_q>.
-- p_c (if not crashed and undecided) waits until N - k such messages have arrived, selects one, say <vote, n, b, l> with l as large as possible, and broadcasts <value, n, b>.
+- Every correct, undecided process q (including p_c) sends to p_c the message vote(n, value_q, last-update_q).
+- p_c (if not crashed and undecided) waits until N - k such messages have arrived, selects one, say vote(n, b, l) with l as large as possible, and broadcasts value(n, b).
 - Every correct, undecided process q (including p_c) waits either:
-    - until <value, n, b> arrives; then it performs value_q ← b and last-update_q ← n, and sends <ack, n> to p_c;
-    - or until it suspects that p_c has crashed; then it sends <nack, n> to p_c.
-- p_c waits for N - k acknowledgments. If more than k of them are positive, then p_c decides for b, broadcasts <decide, b>, and terminates.
+    - until value(n, b) arrives; then it performs value_q ← b and last-update_q ← n, and sends ack(n) to p_c;
+    - or until it suspects that p_c has crashed; then it sends nack(n) to p_c.
+- p_c waits for N - k acknowledgments. If more than k of them are positive, then p_c decides for b, broadcasts decide(b), and terminates.
 
-A correct, undecided process that receives <decide, b>, decides for b and terminates.
+A correct, undecided process that receives decide(b), decides for b and terminates.
 
 Distributed Algorithm: |Chandra-Toueg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +40,39 @@ Distributed Algorithm: |Chandra-Toueg|
     :linenos:
     :caption: Chandra-Toueg Algorithm
 
-    TODO
+
+    OnRound: (r) do
+        if (r == 0)
+            value ← randomly choose value as either 0 or 1
+            last_update ← -1
+            round ← 0
+        
+        send vote(round, value, last_update)
+
+        if q == r mod N # is Coordinator
+            # Do this in a separate thread since the same process will also run Slave code
+            wait for N - k messages vote( r, v, l )
+
+            vote( r, v, l) ← max ( vote(r, v, l) ) for all incoming messages of max last_update
+            value ← v
+            last_update ← r
+
+            send value(r, value) # Coordinator sends value to all processes
+
+            waits for N - k acknowledgment messages ( r )
+            if more than k ack's are received then
+                send decide( value ) # Coordinator sends decide message to all processes
+
+
+
+        # The coordinator is also Slave
+        wait for value( r, b ) or until the coordinator is suspected to be crashed
+        if value( r, b ) is received then
+            value ← b
+            last_update ← r
+            send ack( r ) to the coordinator
+        else
+            send nack( r ) to the coordinator
 
 Example
 ~~~~~~~~
@@ -95,6 +127,13 @@ eventually receive the decide message of p and will also decide.
 Complexity 
 ~~~~~~~~~~
 
-Present theoretic complexity results in terms of number of messages and computational complexity.
+As explained in [Mostefaoui1999]_:
+
+Time complexity of a round: The number of rounds of the protocolis bounded by n, when used with a failure detector of the class S. There is no upper bound when it is used with a failure detector of the class <>S.
+
+Message complexity of a round: During each round, each process sends a message to eachprocess (including itself). Hence, the message complexity of a round is upper bounded by n^2.
+
+Message type and size: There are two types of message: est and decide. A decide message carries only a proposed value. An est message carries a proposed value (or the default value)plus a round number. The size of the round number is bounded by log2(n) when the underlying failure detector belongs to S. It is not bounded in the other case.
 
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
+.. [Mostefaoui1999] Mostéfaoui, Achour & Raynal, Michel. (1999). Solving Consensus Using Chandra-Toueg’s Unreliable Failure Detectors: A General Quorum-Based Approach. Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics). 49-63. 10.1007/3-540-48169-9_4. 
